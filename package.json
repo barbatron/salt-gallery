@@ -2,13 +2,20 @@
   "name": "salt-gallery",
   "module": "index.ts",
   "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/index.ts",
+    "build": "bun build src/index.ts",
+    "start": "NODE_ENV=production bun src/index.ts",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "elysia": "^0.8.17",
+    "googleapis": "^133.0.0"
+  },
   "devDependencies": {
     "bun-types": "latest"
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "googleapis": "^133.0.0"
   }
 }
