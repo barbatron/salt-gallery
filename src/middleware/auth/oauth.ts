@@ -22,6 +22,7 @@ export const oauth = oauth2({
       scope: [
         "https://www.googleapis.com/auth/userinfo.profile",
         "https://www.googleapis.com/auth/photoslibrary.readonly",
+        "https://www.googleapis.com/auth/photoslibrary.readonly.originals",
       ],
     },
   },

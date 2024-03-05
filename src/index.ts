@@ -1,16 +1,21 @@
 import { Elysia } from "elysia";
 import { oauth } from "./middleware/auth/oauth";
-
+import { GooglePhotosService } from "./services/goog.photos";
+import { GoogleUserService } from "./services/goog.user";
 const app = new Elysia();
 
-function userPage(user: {}, libraries: any, logout: string) {
+function userPage(user: {}, stuff: any, logout: string) {
   const html = `<!DOCTYPE html>
     <html lang="en">
     <body>
       <h4>User</h4>
       <pre>${JSON.stringify(user, null, "\t")}</pre>
-      <h4>Libraries</h4>
-      <pre>${JSON.stringify(libraries, null, "\t")}</pre>
+      ${Object.entries(stuff).map(
+        ([key, value]) => `
+          <h4>${key}</h4>
+          <pre>${JSON.stringify(value, null, "\t")}</pre>
+        `
+      )}
       <a href="${logout}">Logout</a>
     </body>
     </html>`;
@@ -26,22 +31,22 @@ app
 
     // check if one or more OAuth 2.0 profiles are authorized
     if (await ctx.authorized("google")) {
-      const user = await fetch(
-        " https://www.googleapis.com/oauth2/v1/userinfo?alt=json",
-        {
-          // ... and use the Authorization header afterwards
-          headers: await ctx.tokenHeaders("google"),
-        }
-      ).then((resp) => resp.json());
+      const googTokenHeaders = await ctx.tokenHeaders("google");
+      const userSvc = new GoogleUserService(googTokenHeaders);
+      const user = await userSvc.get();
 
-      const libraries = await fetch(
-        "https://photoslibrary.googleapis.com/v1/albums?alt=json",
-        { headers: await ctx.tokenHeaders("google") }
-      ).then((resp) => resp.json());
+      const photosSvc = new GooglePhotosService(googTokenHeaders);
+      const libraries = await photosSvc.listLibraries();
+
+      const album = await photosSvc.getAlbum(libraries.albums[0].id);
+      const mediaItems = await photosSvc.searchMediaItems({
+        albumId: album.id,
+      });
+      console.log("mediaItems", mediaItems);
 
       return userPage(
         user ?? { __note: "(undef fallback)" },
-        libraries,
+        { libraries, album, mediaItems },
         profiles.google.logout
       );
     }
