@@ -1,6 +1,6 @@
 {
   "name": "salt-gallery",
-  "module": "index.ts",
+  "module": "src/index.ts",
   "type": "module",
   "scripts": {
     "dev": "bun --watch src/index.ts",
@@ -9,6 +9,7 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@bogeychan/elysia-oauth2": "^0.0.19",
     "elysia": "^0.8.17",
     "googleapis": "^133.0.0"
   },
