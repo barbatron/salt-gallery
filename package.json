@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@bogeychan/elysia-oauth2": "^0.0.19",
-    "elysia": "^0.8.17",
-    "googleapis": "^133.0.0"
+    "elysia": "^0.8.17"
   },
   "devDependencies": {
     "bun-types": "latest"
